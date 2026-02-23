@@ -27,22 +27,24 @@ export default function NovoCaPage() {
 
     setLoading(true);
 
-    const { error } = await supabase.from("cas").insert({
-      ca_number,
-      item_name,
-      brand: brand.trim() || null,
-      model: model.trim() || null,
-      supplier: supplier.trim() || null,
-      expires_at, // IMPORTANTÍSSIMO
-    });
+const { error } = await supabase.from("cas").insert({
+  ca_number,
+  item_name,
+  brand: brand.trim() || null,
+  model: model.trim() || null,
+  supplier: supplier.trim() || null,
+  expires_at, // IMPORTANTÍSSIMO
+});
 
-    setLoading(false);
+setLoading(false);
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+if (error) {
+  alert(error.message);
+  return;
+}
 
+// 👇 ADICIONE ISSO
+window.location.href = "/dashboard/cas";
     router.push("/dashboard/cas");
     router.refresh();
   }
