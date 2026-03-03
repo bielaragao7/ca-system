@@ -162,6 +162,14 @@ export default async function AcompanhamentoPage() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                     <div style={{ fontWeight: 800 }}>CA: {ca.ca_number || "-"}</div>
+                    <div style={{ 
+  marginTop: 6, 
+  fontSize: 13, 
+  color: "#22c55e",
+  fontWeight: 600
+}}>
+  Fase: {ca.etapa_atual || "Sem fase"}
+</div>
                     <span
                       className={statusBadgeClass(ca.status_processo)}
                       style={{
