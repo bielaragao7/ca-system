@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import AdvancePhaseButton from "./AdvancePhaseButton";
+import LocaisEditor from "../_components/LocaisEditor";
 
 export default async function CaDetalhePage({
   params,
@@ -28,21 +29,25 @@ export default async function CaDetalhePage({
 
  const { data: ca, error: caErr } = await supabase
   .from("cas")
-  .select(`
+.select(`
+  id,
+  ca_number,
+  item_name,
+  brand,
+  model,
+  supplier,
+  status_macro,
+  fase_atual_id,
+  fase_atual:ca_fases (
     id,
-    ca_number,
-    item_name,
-    brand,
-    model,
-    supplier,
-    status_macro,
-    fase_atual_id,
-    fase_atual:ca_fases (
-      id,
-      ordem,
-      nome
-    )
-  `)
+    ordem,
+    nome
+  ),
+  ca_locais (
+    local,
+    ativo
+  )
+`)
   .eq("ca_number", caNumber)
   .single();
 
@@ -96,14 +101,19 @@ export default async function CaDetalhePage({
           <strong>Status:</strong> {(ca as any).status_macro ?? "ATIVO"}
         </p>
 
-        <p>
-          <strong>Fase atual:</strong>{" "}
-          {faseAtual ? `${faseAtual.ordem} — ${faseAtual.nome}` : "—"}
-        </p>
+       <p>
+  <strong>Fase atual:</strong>{" "}
+  {faseAtual ? `${faseAtual.ordem} — ${faseAtual.nome}` : "—"}
+</p>
 
-        <div style={{ marginTop: 12 }}>
-          <AdvancePhaseButton caId={ca.id} />
-        </div>
+<LocaisEditor
+  caId={ca.id}
+  initialLocais={((ca as any)?.ca_locais ?? [])}
+/>
+
+<div style={{ marginTop: 12 }}>
+  <AdvancePhaseButton caId={ca.id} />
+</div>
       </div>
 
       <div style={{ marginTop: 18 }}>
