@@ -7,6 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <a href="/dashboard" style={{ color: "#fff" }}>Início</a>
           <a href="/dashboard/cas" style={{ color: "#fff" }}>CAs</a>
           <a href="/dashboard/cas/novo" style={{ color: "#fff" }}>Novo CA</a>
+          <a href="/dashboard/acompanhamento">Acompanhamento</a>
         </nav>
       </aside>
 
