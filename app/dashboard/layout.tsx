@@ -1,17 +1,25 @@
+import Sidebar from "./_components/Sidebar";
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#0b0b0b", color: "#fff" }}>
-      <aside style={{ width: 240, padding: 20, borderRight: "1px solid #222" }}>
-        <h2 style={{ marginTop: 0 }}>CA System</h2>
-        <nav style={{ display: "grid", gap: 10, marginTop: 20 }}>
-          <a href="/dashboard" style={{ color: "#fff" }}>Início</a>
-          <a href="/dashboard/cas" style={{ color: "#fff" }}>CAs</a>
-          <a href="/dashboard/cas/novo" style={{ color: "#fff" }}>Novo CA</a>
-          <a href="/dashboard/acompanhamento">Acompanhamento</a>
-        </nav>
-      </aside>
-
-      <main style={{ flex: 1, padding: 24 }}>{children}</main>
+    <div
+  style={{
+    display: "flex",
+    minHeight: "100vh",
+    background: "var(--background)",
+    color: "var(--foreground)",
+  }}
+>
+      <Sidebar />
+      <main
+        style={{
+          flex: 1,
+          padding: 24,
+          background: "radial-gradient(1000px 600px at 30% 0%, rgba(34,197,94,0.06), transparent 60%)",
+        }}
+      >
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>{children}</div>
+      </main>
     </div>
   );
 }
