@@ -189,7 +189,7 @@ export default function CasListPage() {
               borderBottom: "1px solid #7a7a7a",
               color: "#fff",
               fontWeight: 700,
-              background: "#8f98a3",
+              background: "#4b5563",
               fontSize: 12,
               minWidth: 1760,
             }}
@@ -227,17 +227,28 @@ export default function CasListPage() {
               const vencInfo = getVencimentoInfo(vencStr);
 
               return (
-                <div
-                  key={c.id}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: columns,
-                    minWidth: 1760,
-                    background: index % 2 === 0 ? "#dcdcdc" : "#d4d4d4",
-                    borderBottom: "1px solid #8c8c8c",
-                    fontSize: 13,
-                  }}
-                >
+               <div
+  key={c.id}
+  style={{
+    display: "grid",
+    gridTemplateColumns: columns,
+    minWidth: 1760,
+    background: index % 2 === 0 ? "#e5e7eb" : "#d1d5db",
+    borderBottom: "1px solid #8c8c8c",
+    fontSize: 13,
+    cursor: "pointer",
+    transition: "background 0.15s",
+  }}
+
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background = "#cbd5f5";
+  }}
+
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background =
+      index % 2 === 0 ? "#e5e7eb" : "#d1d5db";
+  }}
+>
                   <div style={cellStyle}>{tipo}</div>
                   <div style={cellStyle}>{tecido}</div>
                   <div style={cellStyle}>{aprovacaoPara}</div>
