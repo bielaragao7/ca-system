@@ -25,46 +25,45 @@ export default function NovoCaPage() {
 
   const [loading, setLoading] = useState(false);
 
-  async function salvar() {
-    const ca_number = caNumber.trim();
-    const item_name = itemName.trim();
-    const expires_at = expiresAt.trim();
+ async function salvar() {
+  const ca_number = caNumber.trim();
+  const item_name = itemName.trim() || tipo.trim() || referencia.trim();
+  const expires_at = expiresAt.trim();
 
-    if (!ca_number || !item_name || !expires_at) {
-      alert("Preencha Nº do CA, Item e Vencimento.");
-      return;
-    }
-
-    setLoading(true);
-
-    const { error } = await supabase.from("cas").insert({
-      ca_number,
-      item_name,
-      brand: brand.trim() || null,
-      model: model.trim() || null,
-      supplier: supplier.trim() || null,
-      expires_at,
-
-      tipo: tipo.trim() || null,
-      tecido: tecido.trim() || null,
-      aprovacao_para: aprovacaoPara.trim() || null,
-      fabricante: fabricante.trim() || null,
-      composicao: composicao.trim() || null,
-      referencia: referencia.trim() || null,
-      data_at: dataAt.trim() || null,
-      normas: normas.trim() || null,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    window.location.href = "/dashboard/cas";
+  if (!ca_number || !expires_at) {
+    alert("Preencha Nº do CA e Vencimento.");
+    return;
   }
 
+  setLoading(true);
+
+  const { error } = await supabase.from("cas").insert({
+    ca_number,
+    item_name: item_name || null,
+    brand: brand.trim() || null,
+    model: model.trim() || null,
+    supplier: supplier.trim() || null,
+    expires_at,
+
+    tipo: tipo.trim() || null,
+    tecido: tecido.trim() || null,
+    aprovacao_para: aprovacaoPara.trim() || null,
+    fabricante: fabricante.trim() || null,
+    composicao: composicao.trim() || null,
+    referencia: referencia.trim() || null,
+    data_at: dataAt.trim() || null,
+    normas: normas.trim() || null,
+  });
+
+  setLoading(false);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  window.location.href = "/dashboard/cas";
+}
   const inputStyle: React.CSSProperties = {
     display: "block",
     width: "100%",
