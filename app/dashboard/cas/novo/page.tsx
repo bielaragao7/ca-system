@@ -12,7 +12,17 @@ export default function NovoCaPage() {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [supplier, setSupplier] = useState("");
-  const [expiresAt, setExpiresAt] = useState(""); // YYYY-MM-DD
+  const [expiresAt, setExpiresAt] = useState("");
+
+  const [tipo, setTipo] = useState("");
+  const [tecido, setTecido] = useState("");
+  const [aprovacaoPara, setAprovacaoPara] = useState("");
+  const [fabricante, setFabricante] = useState("");
+  const [composicao, setComposicao] = useState("");
+  const [referencia, setReferencia] = useState("");
+  const [dataAt, setDataAt] = useState("");
+  const [normas, setNormas] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   async function salvar() {
@@ -27,26 +37,32 @@ export default function NovoCaPage() {
 
     setLoading(true);
 
-const { error } = await supabase.from("cas").insert({
-  ca_number,
-  item_name,
-  brand: brand.trim() || null,
-  model: model.trim() || null,
-  supplier: supplier.trim() || null,
-  expires_at, // IMPORTANTÍSSIMO
-});
+    const { error } = await supabase.from("cas").insert({
+      ca_number,
+      item_name,
+      brand: brand.trim() || null,
+      model: model.trim() || null,
+      supplier: supplier.trim() || null,
+      expires_at,
 
-setLoading(false);
+      tipo: tipo.trim() || null,
+      tecido: tecido.trim() || null,
+      aprovacao_para: aprovacaoPara.trim() || null,
+      fabricante: fabricante.trim() || null,
+      composicao: composicao.trim() || null,
+      referencia: referencia.trim() || null,
+      data_at: dataAt.trim() || null,
+      normas: normas.trim() || null,
+    });
 
-if (error) {
-  alert(error.message);
-  return;
-}
+    setLoading(false);
 
-// 👇 ADICIONE ISSO
-window.location.href = "/dashboard/cas";
-    router.push("/dashboard/cas");
-    router.refresh();
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    window.location.href = "/dashboard/cas";
   }
 
   const inputStyle: React.CSSProperties = {
@@ -60,26 +76,109 @@ window.location.href = "/dashboard/cas";
     borderRadius: 6,
   };
 
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontWeight: 700,
+    marginTop: 4,
+  };
+
   return (
-    <div style={{ maxWidth: 520 }}>
+    <div style={{ maxWidth: 640 }}>
       <h1 style={{ marginTop: 0 }}>Novo CA</h1>
 
-      <label>Nº do CA *</label>
-      <input value={caNumber} onChange={(e) => setCaNumber(e.target.value)} style={inputStyle} />
+      <label style={labelStyle}>Nº do CA *</label>
+      <input
+        value={caNumber}
+        onChange={(e) => setCaNumber(e.target.value)}
+        style={inputStyle}
+      />
 
-      <label>Item *</label>
-      <input value={itemName} onChange={(e) => setItemName(e.target.value)} style={inputStyle} />
+      <label style={labelStyle}>Item *</label>
+      <input
+        value={itemName}
+        onChange={(e) => setItemName(e.target.value)}
+        style={inputStyle}
+      />
 
-      <label>Marca</label>
-      <input value={brand} onChange={(e) => setBrand(e.target.value)} style={inputStyle} />
+      <label style={labelStyle}>Tipo</label>
+      <input
+        value={tipo}
+        onChange={(e) => setTipo(e.target.value)}
+        style={inputStyle}
+      />
 
-      <label>Modelo</label>
-      <input value={model} onChange={(e) => setModel(e.target.value)} style={inputStyle} />
+      <label style={labelStyle}>Tecido</label>
+      <input
+        value={tecido}
+        onChange={(e) => setTecido(e.target.value)}
+        style={inputStyle}
+      />
 
-      <label>Fornecedor</label>
-      <input value={supplier} onChange={(e) => setSupplier(e.target.value)} style={inputStyle} />
+      <label style={labelStyle}>Aprovação para</label>
+      <input
+        value={aprovacaoPara}
+        onChange={(e) => setAprovacaoPara(e.target.value)}
+        style={inputStyle}
+      />
 
-      <label>Vencimento *</label>
+      <label style={labelStyle}>Fabricante</label>
+      <input
+        value={fabricante}
+        onChange={(e) => setFabricante(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Composição</label>
+      <input
+        value={composicao}
+        onChange={(e) => setComposicao(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Referência</label>
+      <input
+        value={referencia}
+        onChange={(e) => setReferencia(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Marca</label>
+      <input
+        value={brand}
+        onChange={(e) => setBrand(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Modelo</label>
+      <input
+        value={model}
+        onChange={(e) => setModel(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Fornecedor</label>
+      <input
+        value={supplier}
+        onChange={(e) => setSupplier(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Data AT</label>
+      <input
+        type="date"
+        value={dataAt}
+        onChange={(e) => setDataAt(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Normas</label>
+      <input
+        value={normas}
+        onChange={(e) => setNormas(e.target.value)}
+        style={inputStyle}
+      />
+
+      <label style={labelStyle}>Vencimento *</label>
       <input
         type="date"
         value={expiresAt}
@@ -91,7 +190,11 @@ window.location.href = "/dashboard/cas";
         {loading ? "Salvando..." : "Salvar"}
       </button>
 
-      <button onClick={() => router.back()} style={{ marginLeft: 10 }} disabled={loading}>
+      <button
+        onClick={() => router.back()}
+        style={{ marginLeft: 10 }}
+        disabled={loading}
+      >
         Cancelar
       </button>
     </div>
