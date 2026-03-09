@@ -15,7 +15,7 @@ type CA = {
   expiration_date?: string | null;
   expires_at?: string | null;
 
-  // futuros campos da planilha
+  // campos futuros / técnicos
   tipo?: string | null;
   tecido?: string | null;
   aprovacao_para?: string | null;
@@ -34,6 +34,19 @@ function formatDate(value?: string | null) {
 
   return d.toLocaleDateString("pt-BR");
 }
+
+const columns =
+  "110px 110px 260px 220px 160px 170px 100px 120px 110px 220px 120px";
+
+const cellStyle: React.CSSProperties = {
+  padding: "10px 8px",
+  borderRight: "1px solid #8c8c8c",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+  minHeight: 52,
+};
 
 export default function CasListPage() {
   const [cas, setCas] = useState<CA[]>([]);
@@ -74,9 +87,15 @@ export default function CasListPage() {
           alignItems: "center",
           justifyContent: "space-between",
           gap: 12,
+          marginBottom: 14,
         }}
       >
-        <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>CAs</h1>
+        <div>
+          <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>CAs</h1>
+          <p style={{ margin: "6px 0 0 0", opacity: 0.7, fontSize: 13 }}>
+            Visual técnico em formato de planilha.
+          </p>
+        </div>
 
         <a
           href="/dashboard/cas/novo"
@@ -86,8 +105,9 @@ export default function CasListPage() {
             padding: "10px 14px",
             borderRadius: 10,
             textDecoration: "none",
-            fontWeight: 700,
+            fontWeight: 800,
             boxShadow: "0 8px 18px rgba(255,122,0,0.25)",
+            whiteSpace: "nowrap",
           }}
         >
           + Novo CA
@@ -96,118 +116,110 @@ export default function CasListPage() {
 
       <div
         style={{
-          marginTop: 14,
           border: "1px solid #555",
           borderRadius: 12,
-          overflowX: "auto",
+          overflow: "hidden",
           background: "#d9d9d9",
+          boxShadow: "0 10px 24px rgba(0,0,0,0.18)",
         }}
       >
-        {/* Cabeçalho */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "140px 140px 280px 220px 180px 180px 100px 120px 120px 220px 120px",
-            padding: 10,
-            borderBottom: "1px solid #7a7a7a",
-            color: "#fff",
-            fontWeight: 700,
-            background: "#8f98a3",
-            fontSize: 13,
-            gap: 0,
-          }}
-        >
-          <div style={{ padding: "0 6px" }}>TIPO</div>
-          <div style={{ padding: "0 6px" }}>TECIDO</div>
-          <div style={{ padding: "0 6px" }}>APROVAÇÃO PARA</div>
-          <div style={{ padding: "0 6px" }}>FABRICANTE</div>
-          <div style={{ padding: "0 6px" }}>COMPOSIÇÃO</div>
-          <div style={{ padding: "0 6px" }}>REFERÊNCIA</div>
-          <div style={{ padding: "0 6px" }}>Nº CA</div>
-          <div style={{ padding: "0 6px" }}>VENCIMENTO</div>
-          <div style={{ padding: "0 6px" }}>DATA AT</div>
-          <div style={{ padding: "0 6px" }}>NORMAS</div>
-          <div style={{ padding: "0 6px" }}>AÇÕES</div>
-        </div>
+        <div style={{ overflowX: "auto" }}>
+          {/* Cabeçalho */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: columns,
+              padding: 0,
+              borderBottom: "1px solid #7a7a7a",
+              color: "#fff",
+              fontWeight: 700,
+              background: "#8f98a3",
+              fontSize: 12,
+              minWidth: 1700,
+            }}
+          >
+            <div style={cellStyle}>TIPO</div>
+            <div style={cellStyle}>TECIDO</div>
+            <div style={cellStyle}>APROVAÇÃO PARA</div>
+            <div style={cellStyle}>FABRICANTE</div>
+            <div style={cellStyle}>COMPOSIÇÃO</div>
+            <div style={cellStyle}>REFERÊNCIA</div>
+            <div style={cellStyle}>Nº CA</div>
+            <div style={cellStyle}>VENCIMENTO</div>
+            <div style={cellStyle}>DATA AT</div>
+            <div style={cellStyle}>NORMAS</div>
+            <div style={{ ...cellStyle, borderRight: "none" }}>AÇÕES</div>
+          </div>
 
-        {/* Conteúdo */}
-        {loading ? (
-          <div style={{ padding: 14, color: "#333" }}>Carregando...</div>
-        ) : cas.length === 0 ? (
-          <div style={{ padding: 14, color: "#333" }}>Nenhum CA encontrado.</div>
-        ) : (
-          cas.map((c) => {
-            const vencStr = c.vencimento ?? c.expiration_date ?? c.expires_at ?? null;
+          {/* Conteúdo */}
+          {loading ? (
+            <div style={{ padding: 16, color: "#222" }}>Carregando...</div>
+          ) : cas.length === 0 ? (
+            <div style={{ padding: 16, color: "#222" }}>Nenhum CA encontrado.</div>
+          ) : (
+            cas.map((c, index) => {
+              const vencStr = c.vencimento ?? c.expiration_date ?? c.expires_at ?? null;
 
-            // Mapeamento temporário com os campos atuais
-            const tipo = c.tipo ?? c.item_name ?? "-";
-            const tecido = c.tecido ?? c.brand ?? "-";
-            const aprovacaoPara = c.aprovacao_para ?? "-";
-            const fabricante = c.fabricante ?? c.supplier ?? "-";
-            const composicao = c.composicao ?? "-";
-            const referencia = c.referencia ?? c.model ?? "-";
-            const dataAtual = c.data_at ?? "-";
-            const normas = c.normas ?? "-";
+              // mapeamento temporário para ficar parecido com a planilha
+              const tipo = c.tipo ?? c.item_name ?? "-";
+              const tecido = c.tecido ?? c.brand ?? "-";
+              const aprovacaoPara = c.aprovacao_para ?? "-";
+              const fabricante = c.fabricante ?? c.supplier ?? "-";
+              const composicao = c.composicao ?? "-";
+              const referencia = c.referencia ?? c.model ?? "-";
+              const dataAtual = c.data_at ?? "-";
+              const normas = c.normas ?? "-";
 
-            return (
-              <div
-                key={c.id}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    "140px 140px 280px 220px 180px 180px 100px 120px 120px 220px 120px",
-                  padding: 0,
-                  borderBottom: "1px solid #8c8c8c",
-                  alignItems: "stretch",
-                  color: "#111",
-                  background: "#dcdcdc",
-                }}
-              >
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{tipo}</div>
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{tecido}</div>
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{aprovacaoPara}</div>
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{fabricante}</div>
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{composicao}</div>
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{referencia}</div>
-
-                <a
-                  href={`/dashboard/cas/${encodeURIComponent(c.ca_number)}`}
-                  style={{
-                    padding: 10,
-                    borderRight: "1px solid #8c8c8c",
-                    textDecoration: "none",
-                    color: "#111",
-                    fontWeight: 700,
-                  }}
-                >
-                  {c.ca_number}
-                </a>
-
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>
-                  {formatDate(vencStr)}
-                </div>
-
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>
-                  {formatDate(dataAtual)}
-                </div>
-
-                <div style={{ padding: 10, borderRight: "1px solid #8c8c8c" }}>{normas}</div>
-
+              return (
                 <div
+                  key={c.id}
                   style={{
-                    padding: 10,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: "grid",
+                    gridTemplateColumns: columns,
+                    minWidth: 1700,
+                    background: index % 2 === 0 ? "#dcdcdc" : "#d4d4d4",
+                    color: "#111",
+                    borderBottom: "1px solid #8c8c8c",
+                    fontSize: 13,
                   }}
                 >
-                  <DeleteCAButton id={c.id} />
+                  <div style={cellStyle}>{tipo}</div>
+                  <div style={cellStyle}>{tecido}</div>
+                  <div style={cellStyle}>{aprovacaoPara}</div>
+                  <div style={cellStyle}>{fabricante}</div>
+                  <div style={cellStyle}>{composicao}</div>
+                  <div style={cellStyle}>{referencia}</div>
+
+                  <a
+                    href={`/dashboard/cas/${encodeURIComponent(c.ca_number)}`}
+                    style={{
+                      ...cellStyle,
+                      textDecoration: "none",
+                      color: "#111",
+                      fontWeight: 800,
+                    }}
+                  >
+                    {c.ca_number}
+                  </a>
+
+                  <div style={cellStyle}>{formatDate(vencStr)}</div>
+                  <div style={cellStyle}>{formatDate(dataAtual)}</div>
+                  <div style={cellStyle}>{normas}</div>
+
+                  <div
+                    style={{
+                      ...cellStyle,
+                      borderRight: "none",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <DeleteCAButton id={c.id} />
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
