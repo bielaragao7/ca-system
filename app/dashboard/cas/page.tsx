@@ -15,7 +15,6 @@ type CA = {
   expiration_date?: string | null;
   expires_at?: string | null;
 
-  // campos futuros / técnicos
   tipo?: string | null;
   tecido?: string | null;
   aprovacao_para?: string | null;
@@ -35,8 +34,65 @@ function formatDate(value?: string | null) {
   return d.toLocaleDateString("pt-BR");
 }
 
+function getVencimentoInfo(value?: string | null) {
+  if (!value) {
+    return {
+      label: "Sem data",
+      bg: "#6b7280",
+      color: "#fff",
+    };
+  }
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  const venc = new Date(value);
+  venc.setHours(0, 0, 0, 0);
+
+  if (Number.isNaN(venc.getTime())) {
+    return {
+      label: "Inválida",
+      bg: "#6b7280",
+      color: "#fff",
+    };
+  }
+
+  const diffMs = venc.getTime() - hoje.getTime();
+  const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDias < 0) {
+    return {
+      label: "Vencido",
+      bg: "#4b5563",
+      color: "#fff",
+    };
+  }
+
+  if (diffDias <= 150) {
+    return {
+      label: "Crítico",
+      bg: "#dc2626",
+      color: "#fff",
+    };
+  }
+
+  if (hoje.getFullYear() === venc.getFullYear()) {
+    return {
+      label: "Atenção",
+      bg: "#facc15",
+      color: "#111",
+    };
+  }
+
+  return {
+    label: "OK",
+    bg: "#16a34a",
+    color: "#fff",
+  };
+}
+
 const columns =
-  "110px 110px 260px 220px 160px 170px 100px 120px 110px 220px 120px";
+  "110px 140px 260px 180px 160px 200px 100px 140px 120px 220px 120px";
 
 const cellStyle: React.CSSProperties = {
   padding: "10px 8px",
@@ -65,7 +121,17 @@ export default function CasListPage() {
           brand,
           model,
           supplier,
-          expires_at
+          vencimento,
+          expiration_date,
+          expires_at,
+          tipo,
+          tecido,
+          aprovacao_para,
+          fabricante,
+          composicao,
+          referencia,
+          data_at,
+          normas
         `)
         .order("expires_at", { ascending: true });
 
@@ -124,7 +190,6 @@ export default function CasListPage() {
         }}
       >
         <div style={{ overflowX: "auto" }}>
-          {/* Cabeçalho */}
           <div
             style={{
               display: "grid",
@@ -135,7 +200,10 @@ export default function CasListPage() {
               fontWeight: 700,
               background: "#8f98a3",
               fontSize: 12,
-              minWidth: 1700,
+              minWidth: 1760,
+              position: "sticky",
+              top: 0,
+              zIndex: 2,
             }}
           >
             <div style={cellStyle}>TIPO</div>
@@ -151,16 +219,15 @@ export default function CasListPage() {
             <div style={{ ...cellStyle, borderRight: "none" }}>AÇÕES</div>
           </div>
 
-          {/* Conteúdo */}
           {loading ? (
             <div style={{ padding: 16, color: "#222" }}>Carregando...</div>
           ) : cas.length === 0 ? (
             <div style={{ padding: 16, color: "#222" }}>Nenhum CA encontrado.</div>
           ) : (
             cas.map((c, index) => {
-              const vencStr = c.vencimento ?? c.expiration_date ?? c.expires_at ?? null;
+              const vencStr =
+                c.vencimento ?? c.expiration_date ?? c.expires_at ?? null;
 
-              // mapeamento temporário para ficar parecido com a planilha
               const tipo = c.tipo ?? c.item_name ?? "-";
               const tecido = c.tecido ?? c.brand ?? "-";
               const aprovacaoPara = c.aprovacao_para ?? "-";
@@ -169,6 +236,7 @@ export default function CasListPage() {
               const referencia = c.referencia ?? c.model ?? "-";
               const dataAtual = c.data_at ?? "-";
               const normas = c.normas ?? "-";
+              const vencimentoInfo = getVencimentoInfo(vencStr);
 
               return (
                 <div
@@ -176,7 +244,7 @@ export default function CasListPage() {
                   style={{
                     display: "grid",
                     gridTemplateColumns: columns,
-                    minWidth: 1700,
+                    minWidth: 1760,
                     background: index % 2 === 0 ? "#dcdcdc" : "#d4d4d4",
                     color: "#111",
                     borderBottom: "1px solid #8c8c8c",
@@ -202,7 +270,34 @@ export default function CasListPage() {
                     {c.ca_number}
                   </a>
 
-                  <div style={cellStyle}>{formatDate(vencStr)}</div>
+                  <div style={cellStyle}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 6,
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          fontSize: 11,
+                          fontWeight: 800,
+                          background: vencimentoInfo.bg,
+                          color: vencimentoInfo.color,
+                          lineHeight: 1,
+                          minWidth: 72,
+                        }}
+                      >
+                        {vencimentoInfo.label}
+                      </span>
+                      <span>{formatDate(vencStr)}</span>
+                    </div>
+                  </div>
+
                   <div style={cellStyle}>{formatDate(dataAtual)}</div>
                   <div style={cellStyle}>{normas}</div>
 
