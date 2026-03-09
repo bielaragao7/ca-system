@@ -62,24 +62,29 @@ export default function CasListPage() {
 
       <div style={{ marginTop: 14, border: "1px solid #222", borderRadius: 12, overflow: "hidden" }}>
         {/* Cabeçalho */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "140px 1fr 140px 140px 1fr 120px 100px",
-            padding: 12,
-            borderBottom: "1px solid #222",
-            color: "#aaa",
-            fontWeight: 600,
-            background: "#0b0b0b",
-          }}
-        >
-          <div>CA</div>
-          <div>Item</div>
-          <div>Marca</div>
-          <div>Modelo</div>
-          <div>Fornecedor</div>
-          <div>Status</div>
-          <div>Ações</div>
+       <div
+  style={{
+    display: "grid",
+    gridTemplateColumns:
+  "120px 120px 260px 200px 160px 160px 90px 120px 110px 200px"
+    padding: 10,
+    borderBottom: "1px solid #555",
+    color: "#fff",
+    fontWeight: 700,
+    background: "#8f98a3",
+    fontSize: 13,
+  }}
+>
+         <div>TIPO</div>
+<div>TECIDO</div>
+<div>APROVAÇÃO PARA</div>
+<div>FABRICANTE</div>
+<div>COMPOSIÇÃO</div>
+<div>REFERÊNCIA</div>
+<div>Nº CA</div>
+<div>VENCIMENTO</div>
+<div>DATA AT</div>
+<div>NORMAS</div>
         </div>
 
         {/* Conteúdo */}
