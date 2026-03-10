@@ -97,47 +97,52 @@ const cellStyle: React.CSSProperties = {
 export default function CasListPage() {
   const [cas, setCas] = useState<CA[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
+ useEffect(() => {
+  async function load() {
 
-      const { data, error } = await supabase
-        .from("cas")
-        .select(`
-          id,
-          ca_number,
-          item_name,
-          brand,
-          model,
-          supplier,
-          expires_at,
-          tipo,
-          tecido,
-          aprovacao_para,
-          fabricante,
-          composicao,
-          referencia,
-          data_at,
-          normas
-        `)
-        .order("expires_at", { ascending: true });
+    // 👇 PEGA O USUÁRIO LOGADO
+    const { data: userData } = await supabase.auth.getUser();
+    setUserEmail(userData?.user?.email ?? null);
 
-      if (error) {
-        console.error(error);
-        alert("Erro ao carregar CAs: " + error.message);
-        setCas([]);
-        setLoading(false);
-        return;
-      }
+    setLoading(true);
 
-      setCas((data as CA[]) ?? []);
+    const { data, error } = await supabase
+      .from("cas")
+      .select(`
+        id,
+        ca_number,
+        item_name,
+        brand,
+        model,
+        supplier,
+        expires_at,
+        tipo,
+        tecido,
+        aprovacao_para,
+        fabricante,
+        composicao,
+        referencia,
+        data_at,
+        normas
+      `)
+      .order("expires_at", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      alert("Erro ao carregar CAs: " + error.message);
+      setCas([]);
       setLoading(false);
+      return;
     }
 
-    load();
-  }, []);
+    setCas((data as CA[]) ?? []);
+    setLoading(false);
+  }
 
+  load();
+}, []);
   return (
     <div style={{ padding: 16 }}>
       <div
@@ -304,7 +309,9 @@ export default function CasListPage() {
                       justifyContent: "center",
                     }}
                   >
-                    <DeleteCAButton id={c.id} />
+                   {userEmail === "gabrielaragaozin@gmail.com" && (
+  <DeleteCAButton id={c.id} />
+)}
                   </div>
                 </div>
               );
